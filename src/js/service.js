@@ -2,7 +2,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 import { getRefs } from './refs';
 import { fetchImages, perPage } from './fetchImages';
-import { drawCards } from '../index';
+import { updateInterface } from '../index';
 
 export const refs = getRefs();
 let value = '';
@@ -11,7 +11,7 @@ let page = 0;
 refs.form.addEventListener('submit', getDataFromForm);
 refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 
-function getDataFromForm(evt) {
+async function getDataFromForm(evt) {
   evt.preventDefault();
 
   value = evt.currentTarget.elements.searchQuery.value.trim();
@@ -21,15 +21,19 @@ function getDataFromForm(evt) {
   }
 
   page = 1;
-  fetchImages(value, page)
-    .then(onFormSubmit)
-    .catch(error => Notify.failure(error));
+  try {
+    const dataRes = await fetchImages(value, page);
+    return onFormSubmit(dataRes);
+  } catch (error) {
+    Notify.failure(error);
+  }
 }
 
-function onFormSubmit(data) {
+function onFormSubmit(response) {
   refs.gallery.innerHTML = '';
 
-  if (data.hits.length === 0) {
+  if (response.data.hits.length === 0) {
+    refs.loadMoreBtn.classList.add('hidden');
     refs.form.reset();
 
     return Promise.reject(
@@ -37,28 +41,32 @@ function onFormSubmit(data) {
     );
   }
 
-  drawCards(data);
-  Notify.success(`Hooray! We found ${data.totalHits} images.`);
-
+  updateInterface(response);
+  Notify.success(`Hooray! We found ${response.data.totalHits} images.`);
   refs.loadMoreBtn.classList.remove('hidden');
 }
 
-function onLoadMoreBtnClick() {
+async function onLoadMoreBtnClick() {
   page += 1;
-  const totalPage = fetchImages(value, page)
-    .then(isAnyMorePages)
-    .catch(error => Notify.failure(error.message));
+
+  try {
+    const dataRes = await fetchImages(value, page);
+    isAnyMorePages(dataRes);
+  } catch (error) {
+    Notify.failure(error.message);
+  }
+  // fetchImages(value, page)
+  //   .then(isAnyMorePages)
+  //   .catch(error => Notify.failure(error.message));
 }
 
-function isAnyMorePages(data) {
+function isAnyMorePages(response) {
   const currentPage = page;
-  const totalPages = Math.ceil(data.totalHits / perPage);
+  const totalPages = Math.ceil(response.data.totalHits / perPage);
 
   if (currentPage === totalPages) {
-    console.log(refs.loadMoreBtn);
-
     refs.loadMoreBtn.classList.add('hidden');
     Notify.info("We're sorry, but you've reached the end of search results.");
   }
-  drawCards(data);
+  updateInterface(response);
 }

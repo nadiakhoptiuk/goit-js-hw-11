@@ -1,9 +1,30 @@
-function renderMarkup(data) {
-  const dataArray = data.hits;
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+let galleryLightbox = new SimpleLightbox('.photo-link', {
+  scrollZoom: true,
+  maxZoom: 2,
+  doubleTapZoom: 1.5,
+  animationSpeed: 150,
+  captionDelay: 250,
+});
+
+function renderMarkup(response) {
+  const dataArray = response.data.hits;
 
   return dataArray
-    .map(({ likes, views, comments, downloads, webformatURL, tags }) => {
-      return /*html*/ `
+    .map(
+      ({
+        likes,
+        views,
+        comments,
+        downloads,
+        webformatURL,
+        tags,
+        largeImageURL,
+      }) => {
+        return /*html*/ `
+  <a class="photo-link" href="${largeImageURL}">
     <div class="photo-card">
       <div class="img-wrap">
         <img class="card-img" src="${webformatURL}" alt="${tags}" loading="lazy"/>
@@ -26,8 +47,10 @@ function renderMarkup(data) {
           <span>${downloads}</span>
         </p>
       </div>
-    </div>`;
-    })
+    </div>
+  </a>`;
+      }
+    )
     .join('');
 }
 
