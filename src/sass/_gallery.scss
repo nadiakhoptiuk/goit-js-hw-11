@@ -30,12 +30,17 @@
 
 .info {
   display: flex;
+  justify-content: space-around;
   padding: 15px 3px;
 }
 
 .info-item {
+  display: flex;
+  flex-direction: column;
   margin: 0px;
+
   font-size: 14px;
+  line-height: 1.75;
   text-align: center;
 }
 
@@ -47,7 +52,7 @@
 
   color: #ffffff;
   text-transform: uppercase;
-  background-color: rgba(35, 35, 155, 0.774);
+  background-color: #214b99;
   border-radius: 4px;
   cursor: pointer;
 }

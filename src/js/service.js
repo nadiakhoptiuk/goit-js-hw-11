@@ -1,5 +1,7 @@
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
 import { getRefs } from './refs';
-import { fetchImages } from './fetchImages';
+import { fetchImages, perPage } from './fetchImages';
 import { drawCards } from '../index';
 
 export const refs = getRefs();
@@ -19,18 +21,44 @@ function getDataFromForm(evt) {
   }
 
   page = 1;
-  fetchImages(value, page).then(onSuccessInput).catch(console.log);
+  fetchImages(value, page)
+    .then(onFormSubmit)
+    .catch(error => Notify.failure(error));
 }
 
-function onSuccessInput(data) {
+function onFormSubmit(data) {
   refs.gallery.innerHTML = '';
+
+  if (data.hits.length === 0) {
+    refs.form.reset();
+
+    return Promise.reject(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  }
+
   drawCards(data);
+  Notify.success(`Hooray! We found ${data.totalHits} images.`);
 
   refs.loadMoreBtn.classList.remove('hidden');
 }
 
 function onLoadMoreBtnClick() {
   page += 1;
+  const totalPage = fetchImages(value, page)
+    .then(isAnyMorePages)
+    .catch(error => Notify.failure(error.message));
+}
 
-  fetchImages(value, page).then(drawCards).catch(console.log);
+function isAnyMorePages(data) {
+  const currentPage = page;
+  const totalPages = Math.ceil(data.totalHits / perPage);
+
+  if (currentPage === totalPages) {
+    console.log(refs.loadMoreBtn);
+
+    refs.loadMoreBtn.classList.add('hidden');
+    Notify.info("We're sorry, but you've reached the end of search results.");
+  }
+  drawCards(data);
 }

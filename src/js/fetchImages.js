@@ -1,5 +1,6 @@
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '27979980-56564682deb2f4cc3aa0cce1c';
+const perPage = 40;
 
 function fetchImages(value, page) {
   const searchParams = new URLSearchParams({
@@ -8,19 +9,13 @@ function fetchImages(value, page) {
     orientation: 'horizontal',
     safesearch: true,
     q: value,
-    per_page: 40,
+    per_page: perPage,
     page,
   });
 
-  return fetch(`${BASE_URL}?&${searchParams}`).then(response => {
-    if (!response.ok) {
-      throw new Error(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
-    }
-
-    return response.json();
-  });
+  return fetch(`${BASE_URL}?&${searchParams}`).then(response =>
+    response.json()
+  );
 }
 
-export { fetchImages };
+export { fetchImages, perPage };

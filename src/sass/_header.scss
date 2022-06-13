@@ -1,6 +1,10 @@
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   padding: 15px 0;
-  background-color: rgba(35, 35, 155, 0.774);
+  background-color: #214b99;
 }
 
 .search-form {
