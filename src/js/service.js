@@ -20,7 +20,7 @@ async function getDataFromForm(evt) {
   page = 1;
   try {
     const dataRes = await fetchImages(value, page);
-    return onFormSubmit(dataRes);
+    onFormSubmit(dataRes);
   } catch (error) {
     Notify.failure(error.message);
   }
@@ -33,12 +33,10 @@ function onFormSubmit(response) {
     refs.loadMoreBtn.classList.add('hidden');
     refs.form.reset();
 
-    throw new Error(
+    Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-    // return Promise.reject(
-    //   'Sorry, there are no images matching your search query. Please try again.'
-    // );
+    return;
   }
 
   updateInterface(response);
@@ -52,12 +50,10 @@ async function onLoadMoreBtnClick() {
   try {
     const dataRes = await fetchImages(value, page);
     isAnyMorePages(dataRes);
+    updateInterface(dataRes);
   } catch (error) {
     Notify.failure(error.message);
   }
-  // fetchImages(value, page)
-  //   .then(isAnyMorePages)
-  //   .catch(error => Notify.failure(error.message));
 }
 
 function isAnyMorePages(response) {
@@ -68,7 +64,6 @@ function isAnyMorePages(response) {
     refs.loadMoreBtn.classList.add('hidden');
     Notify.info("We're sorry, but you've reached the end of search results.");
   }
-  updateInterface(response);
 }
 
 export { getDataFromForm, onLoadMoreBtnClick };

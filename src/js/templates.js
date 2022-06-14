@@ -1,5 +1,4 @@
 import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
 
 let galleryLightbox = new SimpleLightbox('.photo-link', {
   scrollZoom: true,
@@ -29,24 +28,24 @@ function renderMarkup(response) {
       <div class="img-wrap">
         <img class="card-img" src="${webformatURL}" alt="${tags}" loading="lazy"/>
       </div>
-      <div class="info">
-        <p class="info-item">
+      <ul class="info">
+        <li class="info-item">
           <b>Likes</b>
           <span>${likes}</span>
-        </p>
-        <p class="info-item">
+        </li>
+        <li class="info-item">
           <b>Views</b>
           <span>${views}</span>
-        </p>
-        <p class="info-item">
+        </li>
+        <li class="info-item">
           <b>Comments</b>
           <span>${comments}</span>
-        </p>
-        <p class="info-item">
+        </li>
+        <li class="info-item">
           <b>Downloads</b>
           <span>${downloads}</span>
-        </p>
-      </div>
+        </li>
+      </ul>
     </div>
   </a>`;
       }
@@ -54,4 +53,4 @@ function renderMarkup(response) {
     .join('');
 }
 
-export { renderMarkup };
+export { renderMarkup, galleryLightbox };

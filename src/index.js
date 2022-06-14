@@ -12,6 +12,7 @@ refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 function drawCards(data) {
   const markup = renderMarkup(data);
   createGallery(markup);
+  galleryLightbox.refresh();
 }
 
 function createGallery(markup) {
