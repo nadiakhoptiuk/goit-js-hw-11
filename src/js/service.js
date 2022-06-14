@@ -25,7 +25,7 @@ async function getDataFromForm(evt) {
     const dataRes = await fetchImages(value, page);
     return onFormSubmit(dataRes);
   } catch (error) {
-    Notify.failure(error);
+    Notify.failure(error.message);
   }
 }
 
@@ -36,9 +36,12 @@ function onFormSubmit(response) {
     refs.loadMoreBtn.classList.add('hidden');
     refs.form.reset();
 
-    return Promise.reject(
+    throw new Error(
       'Sorry, there are no images matching your search query. Please try again.'
     );
+    // return Promise.reject(
+    //   'Sorry, there are no images matching your search query. Please try again.'
+    // );
   }
 
   updateInterface(response);
