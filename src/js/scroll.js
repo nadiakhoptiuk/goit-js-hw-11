@@ -3,8 +3,13 @@ import { getRefs } from './refs';
 const refs = getRefs();
 
 function scrollDocument() {
-  const { height: cardHeight } =
-    refs.gallery.firstElementChild.getBoundingClientRect();
+  const firstImageInMarkup = refs.gallery.firstElementChild;
+
+  if (!firstImageInMarkup) {
+    return;
+  }
+
+  const { height: cardHeight } = firstImageInMarkup.getBoundingClientRect();
 
   window.scrollBy({
     top: cardHeight * 2,
