@@ -21,6 +21,7 @@ async function getDataFromForm(evt) {
   try {
     const dataRes = await fetchImages(value, page);
     onFormSubmit(dataRes);
+    updateInterface(dataRes);
   } catch (error) {
     Notify.failure(error.message);
   }
@@ -28,8 +29,9 @@ async function getDataFromForm(evt) {
 
 function onFormSubmit(response) {
   refs.gallery.innerHTML = '';
+  const countOfImages = response.data.hits.length;
 
-  if (response.data.hits.length === 0) {
+  if (countOfImages === 0) {
     refs.loadMoreBtn.classList.add('hidden');
     refs.form.reset();
 
@@ -39,9 +41,13 @@ function onFormSubmit(response) {
     return;
   }
 
-  updateInterface(response);
+  if (response.data.totalHits <= countOfImages) {
+    refs.loadMoreBtn.classList.add('hidden');
+  } else {
+    refs.loadMoreBtn.classList.remove('hidden');
+  }
+
   Notify.success(`Hooray! We found ${response.data.totalHits} images.`);
-  refs.loadMoreBtn.classList.remove('hidden');
 }
 
 async function onLoadMoreBtnClick() {
@@ -49,21 +55,23 @@ async function onLoadMoreBtnClick() {
 
   try {
     const dataRes = await fetchImages(value, page);
-    isAnyMorePages(dataRes);
+
+    if (!isAnyMorePage(dataRes)) {
+      refs.loadMoreBtn.classList.add('hidden');
+      Notify.info("We're sorry, but you've reached the end of search results.");
+    }
+
     updateInterface(dataRes);
   } catch (error) {
     Notify.failure(error.message);
   }
 }
 
-function isAnyMorePages(response) {
+function isAnyMorePage(response) {
   const currentPage = page;
   const totalPages = Math.ceil(response.data.totalHits / perPage);
 
-  if (currentPage === totalPages) {
-    refs.loadMoreBtn.classList.add('hidden');
-    Notify.info("We're sorry, but you've reached the end of search results.");
-  }
+  return currentPage === totalPages ? false : true;
 }
 
 export { getDataFromForm, onLoadMoreBtnClick };
