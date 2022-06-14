@@ -4,12 +4,9 @@ import { getRefs } from './refs';
 import { fetchImages, perPage } from './fetchImages';
 import { updateInterface } from '../index';
 
-export const refs = getRefs();
+const refs = getRefs();
 let value = '';
 let page = 0;
-
-refs.form.addEventListener('submit', getDataFromForm);
-refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 
 async function getDataFromForm(evt) {
   evt.preventDefault();
@@ -73,3 +70,5 @@ function isAnyMorePages(response) {
   }
   updateInterface(response);
 }
+
+export { getDataFromForm, onLoadMoreBtnClick };
