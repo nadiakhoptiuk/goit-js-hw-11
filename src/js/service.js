@@ -42,23 +42,26 @@ function onFormSubmit(response) {
   }
 
   if (response.data.totalHits <= countOfImages) {
-    refs.loadMoreBtn.classList.add('hidden');
+    refs.spinners.classList.add('d-none');
   } else {
-    refs.loadMoreBtn.classList.remove('hidden');
+    refs.spinners.classList.remove('d-none');
   }
 
   Notify.success(`Hooray! We found ${response.data.totalHits} images.`);
 }
 
-async function onLoadMoreBtnClick() {
+async function loadImages() {
+  console.log(page);
+
   page += 1;
+  console.log(page);
 
   try {
     const dataRes = await fetchImages(value, page);
 
     if (!isAnyMorePage(dataRes)) {
-      refs.loadMoreBtn.classList.add('hidden');
       Notify.info("We're sorry, but you've reached the end of search results.");
+      refs.spinners.classList.add('d-none');
     }
 
     updateInterface(dataRes);
@@ -74,4 +77,4 @@ function isAnyMorePage(response) {
   return currentPage === totalPages ? false : true;
 }
 
-export { getDataFromForm, onLoadMoreBtnClick };
+export { getDataFromForm, loadImages };
