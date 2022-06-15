@@ -32,7 +32,7 @@ function onFormSubmit(response) {
   const countOfImages = response.data.hits.length;
 
   if (countOfImages === 0) {
-    refs.loadMoreBtn.classList.add('hidden');
+    refs.spinners.classList.add('d-none');
     refs.form.reset();
 
     Notify.failure(
@@ -51,10 +51,7 @@ function onFormSubmit(response) {
 }
 
 async function loadImages() {
-  console.log(page);
-
   page += 1;
-  console.log(page);
 
   try {
     const dataRes = await fetchImages(value, page);
