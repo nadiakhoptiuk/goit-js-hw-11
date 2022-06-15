@@ -1,13 +1,13 @@
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import { renderMarkup, galleryLightbox } from './js/templates';
-import { getDataFromForm, onLoadMoreBtnClick } from './js/service';
+import { getDataFromForm } from './js/service';
 import { scrollDocument } from './js/scroll';
 import { getRefs } from './js/refs';
+import { observer, handleIntersection } from './js/infiniteScroll';
 
 const refs = getRefs();
 refs.form.addEventListener('submit', getDataFromForm);
-refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 
 function drawCards(data) {
   const markup = renderMarkup(data);
@@ -24,4 +24,4 @@ function updateInterface(response) {
   scrollDocument();
 }
 
-export { updateInterface };
+export { updateInterface, drawCards };
